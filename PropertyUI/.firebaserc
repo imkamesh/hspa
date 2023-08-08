@@ -1,0 +1,14 @@
+{
+  "projects": {
+    "default": "property-angnet"
+  },
+  "targets": {
+    "property-angnet": {
+      "hosting": {
+        "PropertyUI": [
+          "property-angnet"
+        ]
+      }
+    }
+  }
+}

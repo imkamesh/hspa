@@ -1,0 +1,10 @@
+PropertyAPI/.vs
+PropertyAPI/bin
+PropertyAPI/obj
+
+PropertyUI/.angular
+PropertyUI/.firebase
+PropertyUI/.vscode
+PropertyUI/dist
+PropertyUI/node_modules
+PropertyUI/.editorconfig
