@@ -22,7 +22,7 @@ namespace PropertyAPI.Controllers
         }
         //GET api/city
         [HttpGet]
-        public async Task<IActionResult> GetCities() 
+        public async Task<IActionResult> GetCities()
         {
             var cities = await unitOfWork.CityRepository.GetCitiesAsync();
             var citiesDto = mapper.Map<IEnumerable<CityDto>>(cities);
@@ -65,16 +65,25 @@ namespace PropertyAPI.Controllers
             await unitOfWork.SaveAsync();
             return StatusCode(201);
         }
-
+        //DELETE api/city/update/1
         [HttpPut("update/{id}")]
         public async Task<IActionResult> UpdateCity(int id, CityDto cityDto)
         {
+            if (id != cityDto.Id)
+            {
+                return BadRequest("Update is not allowed");
+            }
             var cityFromDb = await unitOfWork.CityRepository.FindCity(id);
+            if (cityFromDb == null)
+            {
+                return BadRequest("Update is not allowed");
+            }
             cityFromDb.LastUpdatedBy = 1;
             cityFromDb.LastUpdatedOn = DateTime.Now;
             mapper.Map(cityDto, cityFromDb);
             await unitOfWork.SaveAsync();
-            return StatusCode(200);
+            return StatusCode(500, "Some unknown error occured");
+
         }
 
         [HttpPatch("update/{id}")]
