@@ -14,6 +14,9 @@ namespace PropertyAPI.Data
         public ICityRepository CityRepository => 
             new CityRepository(dataContext);
 
+        public IUserRepository UserRepository => 
+            new UserRepository(dataContext);
+
         public async Task<bool> SaveAsync()
         {
             return await dataContext.SaveChangesAsync() > 0;

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Azure;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using PropertyAPI.Dtos;
@@ -8,9 +9,8 @@ using PropertyAPI.Models;
 
 namespace PropertyAPI.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class CityController : ControllerBase
+    [Authorize]
+    public class CityController : BaseController
     {
         private readonly IUnitOfWork unitOfWork;
         private readonly IMapper mapper;
@@ -22,6 +22,7 @@ namespace PropertyAPI.Controllers
         }
         //GET api/city
         [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> GetCities()
         {
             var cities = await unitOfWork.CityRepository.GetCitiesAsync();
