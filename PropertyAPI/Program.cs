@@ -33,25 +33,45 @@ builder.Services.AddAutoMapper(typeof(AutoMapperProfiles).Assembly);
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 var secretKey = builder.Configuration.GetSection("AppSettings:Key").Value;
-var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
+if (secretKey != null)
+{
+    var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
 
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(opt =>
-    {
-        opt.TokenValidationParameters = new TokenValidationParameters
+    builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+        .AddJwtBearer(opt =>
         {
-            ValidateIssuerSigningKey = true,
-            ValidateIssuer = false,
-            ValidateAudience = false,
-            IssuerSigningKey = key
-        };
-    });
+            opt.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuerSigningKey = true,
+                ValidateIssuer = false,
+                ValidateAudience = false,
+                IssuerSigningKey = key
+            };
+        });
+}
 
 var app = builder.Build();
 
 app.ConfigureExceptionHandler(app.Environment);
 
 //app.ConfigureBuiltInExceptionHandler(app.Environment);
+
+//Setting HTTPS for more security
+app.UseHsts();
+app.UseHttpsRedirection();
+
+app.Use(async (context, next) =>
+{
+    await next();
+    if (context.Response.StatusCode == 404 &&
+    !System.IO.Path.HasExtension(context.Request.Path.Value))
+    {
+        context.Request.Path = "/index.html";
+        await next();
+    }
+});
+app.UseDefaultFiles();
+app.UseStaticFiles();
 
 // Configure the HTTP request pipeline.
 
