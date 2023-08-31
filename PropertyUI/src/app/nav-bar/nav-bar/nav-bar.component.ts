@@ -11,5 +11,10 @@ export class NavBarComponent implements OnInit {
 
   ngOnInit() {
   }
-
+  onLoggedIn(){
+    return localStorage.getItem('token');
+  }
+  onLogout(){
+    localStorage.removeItem('token');
+  }
 }
